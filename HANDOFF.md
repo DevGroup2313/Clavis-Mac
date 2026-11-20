@@ -6,14 +6,15 @@ every shipped stage.
 ```text
 Continue building Clavis, my search engine app for The Offline Project.
 
-REPOSITORIES (clone all four side by side in one folder: clavis, clavis-window, clavis-ios-android, Offline-project-forest)
-- DevGroup2313/Clavis: the app's sources (src/, tools/, tests/, art/, platforms/, app.json) and "Mac project/".
-- DevGroup2313/Clavis-Window: "Windows project/" (written by Clavis's tools/make_apps.py; never edit it by hand).
+REPOSITORIES (clone all four side by side in one folder, as clavis, clavis-window, clavis-ios-android and
+  Offline-project-forest: app.json's "targets" expect those folder names)
+- DevGroup2313/Clavis-Mac: the app's sources (src/, tools/, tests/, art/, platforms/, app.json) and "Mac project/".
+- DevGroup2313/Clavis-Window: "Windows project/" (written by Clavis-Mac's tools/make_apps.py; never edit it by hand).
 - DevGroup2313/Clavis-IOS-Android: "Fire tablet project/" and "iphone-ipad/" (written by make_apps.py too).
 - DevGroup2313/Offline-project-forest: the website; clavis/ is the web copy (written by make_apps.py).
 - Work on branch claude/offline-search-engine-scholarly-32qvhe in all four (it is the default branch of the three
   Clavis repos). Ship in verifiable stages: after each stage, commit, push, and give me a short release note plus an
-  updated handoff prompt in the chat (and update HANDOFF.md in DevGroup2313/Clavis).
+  updated handoff prompt in the chat (and update HANDOFF.md in DevGroup2313/Clavis-Mac).
 - Reference (clone read-only): DevGroup2313/Ingenium-Mac-Mini (source/build/thoughts = the shared thoughts panel and
   quiet screen; source/build/jewels = the family's cut-stone keys; source/offline_project/french = the family's French
   toolkit), DevGroup2313/Carpe-Diem-Gift (its French: tr(key, english) + UI_FR, fr_engine.js, the harvest test),
@@ -54,7 +55,7 @@ HOW IT IS BUILT AND TESTED (in the clavis folder)
 - python3 -I tools/make_apps.py  -> Mac project/ here, the other repos' projects, their workflows, the web copy
 - python3 -m http.server 8151, then node tests/t_smoke.js http://127.0.0.1:8151/clavis.html OUT_DIR
 - app.json: name Clavis, ids com.yannieforest.clavis / com.yannie.clavis, data folder Clavis, port 42071, build 101.
-  Raise "pass" for each shipped build. Releases: tags clavis-mac (Clavis), clavis-windows (Clavis-Window),
+  Raise "pass" for each shipped build. Releases: tags clavis-mac (Clavis-Mac), clavis-windows (Clavis-Window),
   clavis-apk and clavis-ios (Clavis-IOS-Android).
 
 THE FAMILY'S CONVENTIONS (keep them)

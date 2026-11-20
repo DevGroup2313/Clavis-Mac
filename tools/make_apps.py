@@ -30,6 +30,7 @@ def ident():
         "FILE": file, "APP_ID": a["app_id"], "ANDROID_ID": a["android_id"], "DATA": a["data_folder"],
         "PORT": str(a["port"]), "PASS": str(a["pass"]), "BG": a.get("background", "#f5f2ea"), "PREFIX": "", "PREFIX_WIN": "",
         "GUID": str(uuid.uuid5(uuid.NAMESPACE_URL, "offline-project/" + a["app_id"])).upper(),
+        "HOME_REPO": a.get("repos", {}).get("mac", "DevGroup2313/" + name),
     }
     return a, tok
 

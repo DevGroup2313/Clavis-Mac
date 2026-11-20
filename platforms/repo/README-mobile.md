@@ -4,7 +4,7 @@ NO LICENCE IS GRANTED. See `Fire tablet project/LICENCE.txt` and `iphone-ipad/LI
 # @@NAME@@ for tablets and phones
 
 The Offline Project's search engine, as an app for a Fire tablet or any Android device, and for iPhone and iPad.
-Everything in this repository is written by `tools/make_apps.py` in DevGroup2313/@@NAME@@ (the app's own sources live
+Everything in this repository is written by `tools/make_apps.py` in @@HOME_REPO@@ (the app's own sources live
 there); change it there, not here.
 
 **Fire tablet, Android**: from the Releases page, download `@@FILE@@.apk` on the tablet and open it (allow your browser

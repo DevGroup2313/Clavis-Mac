@@ -4,7 +4,7 @@ NO LICENCE IS GRANTED. See `Windows project/LICENCE.txt`.
 # @@NAME@@ for Windows
 
 The Offline Project's search engine, as a Windows app. Everything in this repository is written by `tools/make_apps.py`
-in DevGroup2313/@@NAME@@ (the app's own sources live there); change it there, not here.
+in @@HOME_REPO@@ (the app's own sources live there); change it there, not here.
 
 **Install**: open the Releases page, download `@@NAME@@-@@PASS@@-Windows-Setup.exe` and run it. It installs for you
 alone (no administrator password), puts @@NAME@@ in the Start menu, and copies your library aside before every install.

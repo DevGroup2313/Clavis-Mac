@@ -32,7 +32,7 @@ open book between two crossed keys, in onyx and gold, drawn in layers that stand
 
 | Device | Repository | What to download from its Releases page |
 | --- | --- | --- |
-| Mac (Intel and Apple silicon) | DevGroup2313/Clavis (this one) | `Clavis-Mac.zip`: unzip, drag Clavis to Applications. Uninstall: drag it to the Bin. |
+| Mac (Intel and Apple silicon) | DevGroup2313/Clavis-Mac (this one) | `Clavis-Mac.zip`: unzip, drag Clavis to Applications. Uninstall: drag it to the Bin. |
 | Windows | DevGroup2313/Clavis-Window | `Clavis-101-Windows-Setup.exe` (the number is the build): installs for you alone, no administrator password; uninstall in Settings, Apps. `Clavis-Windows.zip` runs without installing. |
 | Fire tablet, Android | DevGroup2313/Clavis-IOS-Android | `clavis.apk`: open it on the tablet and allow the install. Uninstall: hold its icon, Uninstall. |
 | iPhone, iPad | DevGroup2313/Clavis-IOS-Android | `Clavis.ipa`: install with Sideloadly, as the family's apps are. Uninstall: hold its icon, Remove App. |
