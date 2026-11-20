@@ -1,0 +1,16 @@
+CLAVIS  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved. NO LICENCE IS GRANTED.
+
+Clavis on macOS: if it will not open the first time
+=====================================================
+
+macOS says "Apple could not verify Clavis is free of malware" for any app that has not been through Apple's paid
+notarisation service. It is not saying it found something; it has no proof from Apple, so it asks you. Choose one:
+
+1. Right-click (or Control-click) Clavis.app in Applications, choose Open, then Open again. Only the first time.
+
+2. System Settings, Privacy & Security: scroll down to the message about Clavis and press Open Anyway.
+
+3. In Terminal:   xattr -dr com.apple.quarantine /Applications/Clavis.app   then double-click it.
+
+En français : clic droit sur Clavis.app, Ouvrir, puis Ouvrir encore (la première fois seulement). Ou : Réglages
+Système, Confidentialité et sécurité, Ouvrir quand même.

@@ -1,0 +1,155 @@
+# @@NAME_UPPER@@  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+# NO LICENCE IS GRANTED. See LICENCE.txt.
+#
+# Builds @@NAME@@ for iPhone and iPad on GitHub's own Macs (they have Xcode, so your own computer needs neither) and
+# puts @@IOS_TARGET@@.ipa on the Releases page. One file works on both iPhone and iPad. Made from the recipe that builds
+# The Forge for iPhone and iPad (DevGroup2313/the-forge-ios), the same Xcode project.
+#
+# The IPA is NOT signed. Apple lets no app onto an iPhone or iPad unless it is signed with an Apple ID, so Sideloadly
+# signs it with yours while it installs it over the USB cable, the way Inkwell, Ingenium and The Forge are installed.
+#
+# COST. For a private repository GitHub counts each minute on a Mac as ten minutes of the monthly allowance, so after
+# an upload it only builds and publishes; opening the app in Apple's iPhone simulator runs only when you ask
+# (Actions, "Build @@NAME@@ for iPhone and iPad", "Run workflow", tick the box).
+
+name: Build @@NAME@@ for iPhone and iPad
+
+on:
+  push:
+    paths:
+      - '@@PREFIX@@iphone-ipad/**'
+      - '!@@PREFIX@@iphone-ipad/README.txt'
+      - '.github/workflows/@@FILE@@-ios.yml'
+  workflow_dispatch:
+    inputs:
+      simulator_check:
+        description: 'Also open the app in the iPhone simulator and check its page (up to about 30 more Mac minutes)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: @@FILE@@-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_FOLDER: '@@PREFIX@@iphone-ipad'
+  WANT_SIM: ${{ github.event_name == 'workflow_dispatch' && inputs.simulator_check }}
+
+jobs:
+  ipa:
+    runs-on: macos-latest
+    timeout-minutes: 75
+    defaults:
+      run:
+        working-directory: '@@PREFIX@@iphone-ipad'
+    steps:
+      - name: Get the project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1, runs on Node.js 24
+
+      - name: Stamp the version from BUILD_INFO.txt
+        run: |
+          xcodebuild -version
+          PASS=$(sed -n 's/^Pass:[[:space:]]*\([0-9][0-9]*\).*/\1/p' BUILD_INFO.txt | head -n 1)
+          if [ -z "$PASS" ]; then echo "::error::BUILD_INFO.txt names no Pass."; exit 1; fi
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $PASS" -c "Set :CFBundleVersion $PASS" @@IOS_TARGET@@/Info.plist
+          echo "PASS=$PASS" >> "$GITHUB_ENV"
+
+      - name: Build the app (unsigned)
+        run: |
+          test -f "@@IOS_TARGET@@/www/@@FILE@@.html" || { echo "::error::@@IOS_TARGET@@/www/@@FILE@@.html is missing."; exit 1; }
+          SDKS="iphoneos"
+          if [ "$WANT_SIM" = "true" ]; then SDKS="iphoneos iphonesimulator"; fi
+          for SDK in $SDKS; do
+            xcodebuild -project @@IOS_TARGET@@.xcodeproj -target @@IOS_TARGET@@ -configuration Release -sdk "$SDK" \
+              SYMROOT="$RUNNER_TEMP/build-$SDK" \
+              CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+              build >> "$RUNNER_TEMP/build-log.txt" 2>&1
+            echo "built for $SDK"
+          done
+
+      - name: If the build failed, show why
+        if: failure()
+        run: |
+          grep -n "error:" "$RUNNER_TEMP/build-log.txt" | head -n 40 || echo "(no lines with error:)"
+          tail -n 60 "$RUNNER_TEMP/build-log.txt" || echo "(no build log was written)"
+
+      - name: Keep the build log, pass or fail
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2, runs on Node.js 24
+        with:
+          name: @@FILE@@-ios-build-log
+          path: ${{ runner.temp }}/build-log.txt
+          if-no-files-found: ignore
+
+      - name: Pack the IPA
+        run: |
+          APP="$RUNNER_TEMP/build-iphoneos/Release-iphoneos/@@IOS_TARGET@@.app"
+          test -f "$APP/www/@@FILE@@.html" || { echo "::error::The built app holds no www/@@FILE@@.html."; exit 1; }
+          cmp -s "$APP/www/@@FILE@@.html" "@@IOS_TARGET@@/www/@@FILE@@.html" || { echo "::error::The app inside the IPA is not the page that was uploaded."; exit 1; }
+          rm -rf "$RUNNER_TEMP/ipa" "$RUNNER_TEMP/out"; mkdir -p "$RUNNER_TEMP/ipa/Payload" "$RUNNER_TEMP/out"
+          cp -R "$APP" "$RUNNER_TEMP/ipa/Payload/"
+          (cd "$RUNNER_TEMP/ipa" && zip -qry "$RUNNER_TEMP/out/@@IOS_TARGET@@.ipa" Payload)
+          echo "@@IOS_TARGET@@.ipa: $(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist"), version $(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Info.plist"), $(stat -f %z "$RUNNER_TEMP/out/@@IOS_TARGET@@.ipa") bytes"
+
+      - name: Keep the IPA with this run
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2, runs on Node.js 24
+        with:
+          name: @@FILE@@-ipa
+          path: ${{ runner.temp }}/out/@@IOS_TARGET@@.ipa
+          if-no-files-found: error
+
+      - name: Put the IPA on the Releases page
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG=@@FILE@@-ios
+          IPA="$RUNNER_TEMP/out/@@IOS_TARGET@@.ipa"
+          NOTES="@@NAME@@ for iPhone and iPad, build ${PASS}. Built $(date -u '+%d %B %Y, %H:%M UTC') from branch ${GITHUB_REF_NAME}, commit ${GITHUB_SHA:0:7}. One file for iPhone and iPad.
+          To install: on a computer (Windows or Mac), download @@IOS_TARGET@@.ipa below, open Sideloadly, connect the iPhone or iPad with its cable, drag @@IOS_TARGET@@.ipa into Sideloadly, type your Apple ID and press Start. With a free Apple ID the app must be installed again this way every 7 days (your library stays). To uninstall: hold the seal on the Home Screen, Remove App."
+          publish() {
+            if gh release view "$TAG" > /dev/null 2>&1; then gh release upload "$TAG" "$IPA" --clobber
+            else gh release create "$TAG" "$IPA" --target "$GITHUB_SHA" --title "@@NAME@@ for iPhone and iPad" --notes "$NOTES"; fi
+          }
+          OK=0
+          for WAIT in 0 15 30 60; do
+            if [ "$WAIT" -gt 0 ]; then sleep "$WAIT"; fi
+            if publish; then OK=1; break; fi
+          done
+          if [ "$OK" != 1 ]; then echo "::error::GitHub refused to publish. Settings, Actions, General, Workflow permissions: Read and write, then re-run."; exit 1; fi
+          gh release edit "$TAG" --notes "$NOTES" || true
+
+      - name: Open the app in the iPhone simulator and check its page
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.simulator_check }}
+        timeout-minutes: 40
+        run: |
+          set +e
+          APP="$RUNNER_TEMP/build-iphonesimulator/Release-iphonesimulator/@@IOS_TARGET@@.app"
+          BID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)['devices']
+          for rt in sorted(d, reverse=True):
+              for dev in d[rt]:
+                  if 'iOS' in rt and dev['name'].startswith('iPhone'): print(dev['udid']); sys.exit(0)
+          ")
+          if [ -z "$UDID" ]; then echo "::warning::No iPhone simulator on this runner."; exit 0; fi
+          xcrun simctl boot "$UDID"; xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" "$APP" || { echo "::error::The app did not install in the simulator."; exit 1; }
+          LOG="$RUNNER_TEMP/pagetest.log"
+          xcrun simctl launch --console-pty "$UDID" "$BID" -shell_pagetest > "$LOG" 2>&1 &
+          for i in $(seq 1 120); do grep -q "SHELL_PAGETEST PAGE" "$LOG" 2>/dev/null && break; sleep 4; done
+          grep "SHELL_PAGETEST" "$LOG" | tail -n 3
+          mkdir -p "$RUNNER_TEMP/shots"; xcrun simctl io "$UDID" screenshot "$RUNNER_TEMP/shots/iPhone.png"
+          grep -q "SHELL_PAGETEST PAGE" "$LOG" || { echo "::error::The page did not report."; exit 1; }
+
+      - name: Keep the photograph
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.simulator_check }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2, runs on Node.js 24
+        with:
+          name: @@FILE@@-ios-simulator
+          path: ${{ runner.temp }}/shots
+          if-no-files-found: ignore

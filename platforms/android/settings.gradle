@@ -1,0 +1,6 @@
+/*
+   @@NAME_UPPER@@  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+   NO LICENCE IS GRANTED. See LICENCE.txt.
+*/
+rootProject.name = '@@NAME@@'
+include ':app'

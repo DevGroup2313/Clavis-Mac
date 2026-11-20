@@ -1,0 +1,9 @@
+/*
+   @@NAME_UPPER@@  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+   NO LICENCE IS GRANTED. See LICENCE.txt.
+*/
+buildscript {
+    repositories { google(); mavenCentral() }
+    dependencies { classpath 'com.android.tools.build:gradle:8.2.2' }
+}
+allprojects { repositories { google(); mavenCentral() } }

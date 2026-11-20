@@ -1,0 +1,42 @@
+/*
+   @@NAME_UPPER@@  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+   NO LICENCE IS GRANTED. See LICENCE.txt.
+*/
+apply plugin: 'com.android.application'
+android {
+    namespace '@@ANDROID_ID@@'
+    compileSdk 34
+    defaultConfig {
+        applicationId '@@ANDROID_ID@@'
+        minSdk 22
+        targetSdk 34
+        // a new build always installs over the one before (it counts minutes since 1 January 2025), keeping your library
+        versionCode ((int) ((System.currentTimeMillis() - 1735689600000L) / 60000L))
+        versionName '@@PASS@@'
+    }
+    signingConfigs {
+        app {
+            // the same key every time, so each new build installs over the last one
+            storeFile file('app.keystore')
+            storePassword 'clavisapp'
+            keyAlias 'clavis'
+            keyPassword 'clavisapp'
+        }
+    }
+    buildTypes {
+        debug { signingConfig signingConfigs.app }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.app
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+dependencies { implementation 'androidx.webkit:webkit:1.8.0' }

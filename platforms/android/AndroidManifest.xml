@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  @@NAME_UPPER@@  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+  NO LICENCE IS GRANTED. No copying, adaptation, redistribution, reverse
+  engineering or commercial use without the author's written permission.
+  See LICENCE.txt. Every distributed copy carries a build marker.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- the searches go out to the sources you leave switched on; nothing else is sent -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- No adaptive icon, as Carpe Diem: a round seal cannot fill a rounded square, and Fire OS would draw a white
+         square behind it. The legacy transparent seal is drawn as it is. -->
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.NoTitleBar">
+        <activity android:name=".MainActivity" android:exported="true"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

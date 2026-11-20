@@ -1,0 +1,53 @@
+CLAVIS
+Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+
+===========================================================================
+NO LICENCE IS GRANTED
+===========================================================================
+
+This software and everything in it is the exclusive property of the author.
+Possession of a copy grants you no rights in it beyond reading it and running
+it yourself on your own device.
+
+You may NOT, without the author's prior express written permission:
+
+  - copy, reproduce or redistribute this file or any part of it
+  - publish or host it, in whole or in part, publicly or privately
+  - adapt, modify, translate or build upon it
+  - reverse engineer it, or extract any component of it for reuse
+  - incorporate any part of it into another work, product or service
+  - use it, or anything derived from it, for any commercial purpose
+  - train, fine tune or evaluate any machine learning system on it
+
+This applies equally to the source code and to the WRITTEN AND DESIGNED WORK
+it carries: the interface prose in English, French and Haitian Creole, the
+guided tour, the visual design, and the seal and its inscription. Each of these
+is an authored work in its own right and is protected independently of the code.
+
+The parts it carries under their own licences keep them: Princeton WordNet 3.0,
+SCOWL, citeproc-js, the Citation Style Language styles, PDF.js, and the fonts
+Cormorant, Cinzel, Inter and Atkinson Hyperlegible (SIL Open Font Licence).
+
+WHAT YOU MAY DO
+  - Read the file. It is a single readable file on purpose, so that its claim
+    to keep your library on your device and to use no AI can be verified rather
+    than trusted.
+  - Run it for your own use.
+  - Keep your own backups of your own library, which never leaves your device.
+
+EVERY DISTRIBUTED COPY IS MARKED
+  Each copy carries a build marker. This is stated plainly here rather than
+  concealed.
+
+NO WARRANTY
+  The software is provided as is, without warranty of any kind. The author is
+  not liable for any loss arising from its use. Keep your own backups.
+
+PERMISSION
+  Permission for any use not listed above may be granted, and is granted only
+  in writing, by the author. Ask. The answer is sometimes yes.
+
+===========================================================================
+Nothing in this notice limits any right you have that cannot be limited by
+agreement under the law that applies to you.
+===========================================================================

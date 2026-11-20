@@ -1,0 +1,18 @@
+{
+  "_about": "Who this app is. tools/make_apps.py reads it to write the Mac, Windows, Fire tablet and iPhone/iPad projects and their build workflows into the app's three repositories, and the website's copy, as the family's builders read theirs. Change the name here and run the tool again: every app follows.",
+  "name": "Clavis",
+  "file_name": "clavis",
+  "app_id": "com.yannieforest.clavis",
+  "android_id": "com.yannie.clavis",
+  "data_folder": "Clavis",
+  "port": 42071,
+  "background": "#f5f2ea",
+  "pass": 101,
+  "seal_1024": "art/seal/1024/seal-day.png",
+  "targets": {
+    "mac": ".",
+    "windows": "../clavis-window",
+    "mobile": "../clavis-ios-android",
+    "web": "../Offline-project-forest/clavis"
+  }
+}

@@ -1,0 +1,17 @@
+{
+ "name": "@@NAME@@",
+ "short_name": "@@NAME@@",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "@@BG@@",
+ "theme_color": "@@BG@@",
+ "description": "The Offline Project's search engine: the open web and the scholarly record online, everything you keep offline. No AI.",
+ "categories": ["productivity", "education", "reference"],
+ "icons": [
+  {"src": "icons/seal-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+  {"src": "icons/seal-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+  {"src": "icons/seal-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+  {"src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}
+ ]
+}

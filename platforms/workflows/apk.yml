@@ -1,0 +1,90 @@
+# @@NAME_UPPER@@  |  Copyright (c) 2026 Yannie D. Forest. All rights reserved.
+# NO LICENCE IS GRANTED. See LICENCE.txt.
+#
+# Builds @@NAME@@ for Fire tablet and Android on GitHub's machines, as Carpe Diem's tablet app is built, and puts
+# @@FILE@@.apk on the Releases page. On the tablet: download it, open it from Downloads, Install (the first time the
+# tablet asks to allow installs from that app). Each new build installs over the last and keeps your library.
+# Uninstall: hold the seal on the home screen, Uninstall (or Settings, Apps).
+
+name: Build @@NAME@@ for Fire tablet
+
+on:
+  push:
+    paths:
+      - '@@PREFIX@@Fire tablet project/**'
+      - '.github/workflows/@@FILE@@-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: @@FILE@@-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PROJ: '@@PREFIX@@Fire tablet project'
+    steps:
+      - name: Get the project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1, runs on Node.js 24
+
+      - name: Prepare Java and the Android tools
+        run: |
+          echo "JAVA_HOME=${JAVA_HOME_17_X64:-$JAVA_HOME}" >> "$GITHUB_ENV"
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          SDKM=$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n 1)
+          if [ -n "$SDKM" ]; then
+            yes | "$SDKM" --licenses > /dev/null
+            "$SDKM" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+            echo "Android tools ready in $SDK"
+          else
+            echo "sdkmanager not found; the Android plugin will fetch what it needs."
+          fi
+
+      - name: Get Gradle 8.7
+        run: |
+          curl -sSL --retry 4 -o "$RUNNER_TEMP/gradle.zip" https://services.gradle.org/distributions/gradle-8.7-bin.zip
+          unzip -q "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/gradle-8.7/bin" >> "$GITHUB_PATH"
+
+      - name: Build the APK
+        run: |
+          cd "$PROJ"
+          set -o pipefail
+          gradle --no-daemon :app:assembleRelease 2>&1 | tee "$RUNNER_TEMP/build-log.txt"
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/@@FILE@@.apk"
+          ls -la "$GITHUB_WORKSPACE/@@FILE@@.apk"
+          unzip -l "$GITHUB_WORKSPACE/@@FILE@@.apk" | grep -q 'assets/@@FILE@@.html' || { echo "::error::the app's page is missing from the APK"; exit 1; }
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$GITHUB_WORKSPACE/@@FILE@@.apk" | head -n 3
+
+      - name: If the build failed, show why
+        if: failure()
+        run: tail -n 60 "$RUNNER_TEMP/build-log.txt" || echo "(no build log was written)"
+
+      - name: Keep the APK with this run
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2, runs on Node.js 24
+        with:
+          name: @@FILE@@-apk
+          path: '@@FILE@@.apk'
+          if-no-files-found: error
+
+      - name: Put the APK on the Releases page
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG=@@FILE@@-apk
+          PASS=$(grep -m1 '^Pass:' "$PROJ/BUILD_INFO.txt" | tr -dc '0-9')
+          NOTES="@@NAME@@ for Fire tablet and Android, build ${PASS}. Built $(date -u '+%d %B %Y, %H:%M UTC') from branch ${GITHUB_REF_NAME}, commit ${GITHUB_SHA:0:7}.
+          On the tablet: tap @@FILE@@.apk below, then open it from Downloads to install. Each new build installs over the old one and keeps your library. To uninstall: hold the seal, Uninstall."
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" "@@FILE@@.apk" --clobber
+            gh release edit "$TAG" --notes "$NOTES"
+          else
+            gh release create "$TAG" "@@FILE@@.apk" --target "$GITHUB_SHA" --title "@@NAME@@ for Fire tablet" --notes "$NOTES"
+          fi
