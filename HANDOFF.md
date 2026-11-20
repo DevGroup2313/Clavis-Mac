@@ -41,7 +41,16 @@ STATE
   keys, breathes a gold light, sweeps a shine and glints on the rubies; pressing it stamps a ring (Motion: Full only;
   Calm slows it; Still stops it). The keys that matter are the family's cut stones (tools/stones.py, from Ingenium's
   hx-stone): onyx by day, gold by night, gilt rim, sparks at the corners, lift and seat. The side buttons' glyphs
-  breathe as Carpe Diem's do. Smoke test 73/73.
+  breathe as Carpe Diem's do. Smoke test 73/73. Build 101 is on each repository's Releases page, all four built,
+  opened and (Windows) installed and uninstalled on GitHub's machines: Clavis-Mac (clavis-mac: Clavis-Mac.zip),
+  Clavis-Window (clavis-windows: Clavis-101-Windows-Setup.exe, Clavis-Windows.zip), Clavis-IOS-Android (clavis-apk:
+  clavis.apk; clavis-ios: Clavis.ipa). The website's copy (Offline-project-forest/clavis) opens with no connection.
+- Open questions for me: the three Clavis repositories are public (Carpe Diem's are private), so the Android signing
+  key kept in them (the family's recipe) is readable; if I make them private, swap in a fresh key (platforms/android/
+  app.keystore, alias clavis) before I rely on the tablet app. The four old Lucerna releases on Offline-project-forest
+  can be deleted if I say so.
+- Small polish noted: on a window under about 760px high the welcome card is taller than the window (it scrolls);
+  shrink the seal and spacing on short windows.
 - Next: Stage 3 (French + Haitian Creole, Carpe Diem's way: English at the call site, dictionaries keyed by the
   English line (fr, ht), number/plural patterns, a translation layer for the shared English-only panels (thoughts,
   quiet screen), a 3-language picker (English, Français, Kreyòl), a Playwright harvest that fails on any English
